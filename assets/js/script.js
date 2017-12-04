@@ -154,7 +154,7 @@ $('document').ready(function(){
                          <h3 class="text-center">It's a tie... You have defeated ${currentVillan.name}. Better luck next time!</h3>
                     `);
                     $('#goodGuy').html(`
-                         <h3 class="text-center">It's a tie... You have killed by ${currentVillan.name}. Better luck next time!</h3>
+                         <h3 class="text-center">It's a tie... You have been killed by ${currentVillan.name}. Better luck next time!</h3>
                     `);
                }
                else if(currentVillanHealth <= 0){
