@@ -1,135 +1,187 @@
 $('document').ready(function(){
-     var isHero = false;
-     var currentHealth;
+     var currentHero;
+     var currentVillan;
+     var currentHeroHealth;
+     var currentVillanHealth;
+     var currentHeroHealthBar;
+     var currentVillanHealthBar;
+     var totalDeaths = 0;
+     var villansKilled = 0;
+     var currentHeroAttackPower;
+     var availableAttackers = 0;
      var gameSetup = {
           possibleAttackers: [
                {
                     name: "Iron Man",
                     img: "./assets/images/ironman.png",
+                    attackImg: "./assets/images/ironmanAttack.png",
+                    defendImg: "./assets/images/ironmanDefend.png",
                     id: 'hero001',
-                    currentAttacker: false,
-                    currentVillan: false,
                     healthPoints: 150,
-                    attackPower: 10,
-                    attackPowerInc: Math.floor(Math.random()*100),
-                    counterAttackPower: 12,
+                    attackPower: 7,
+                    counterAttackPower: 10,
                     description:  `Iron Man wears a sophisticated suit a body armor containing various offensive weaponry.`
                },
                     {
                     name: "Hulk",
                     img: "./assets/images/hulk.png",
+                    attackImg: "./assets/images/hulkAttack.png",
+                    defendImg: "./assets/images/hulkDefend.png",
                     healthPoints: 156,
                     id: 'hero002',
-                    currentAttacker: false,
-                    currentVillan: false,
                     attackPower: 9,
-                    attackPowerInc: Math.floor(Math.random()*100),
                     counterAttackPower: 9,
                     description: `The Hulk possesses the capacity for nearly limitless physical strength.`
                },
                {
                     name: "Loki",
                     img: "./assets/images/loki.png",
+                    attackImg: "./assets/images/lokiAttack.png",
+                    defendImg: "./assets/images/lokiDefend.png",
                     healthPoints: 159,
                     id: 'villan001',
-                    currentAttacker: false,
-                    currentVillan: false,
                     attackPower: 8,
-                    attackPowerInc: Math.floor(Math.random()*100),
                     counterAttackPower: 12,
                     description: `Loki is superhumanly strong, immune to all diseases, and resistant to conventional injury.`
                },
                {
                     name: "Thanos",
                     img: "./assets/images/thanos.png",
-                    healthPoints: 1904,
+                    attackImg: "./assets/images/thanosAttack.png",
+                    defendImg: "./assets/images/thanosDefend.png",
+                    healthPoints: 190,
                     id: 'villan002',
-                    currentAttacker: false,
-                    currentVillan: false,
                     attackPower: 3,
-                    attackPowerInc: Math.floor(Math.random()*100),
                     counterAttackPower: 16,
                     description: `Thanos is a mutant whose massive, heavy-bided body was born with the capacity to synthesize cosmic energy.  `
                }
           ],
-          goodGuy: function(hero, heroId){
-               var heroInfo = $('<div>')
+          goodGuy: function(heroId){
+               var heroInfo = $('<div>');
 
                for(var i=0; i<gameSetup.possibleAttackers.length; i++){
                     if(gameSetup.possibleAttackers[i].id === heroId){
-                         gameSetup.possibleAttackers[i].currentAttacker = true;
-                         currentHealth = (gameSetup.possibleAttackers[i].healthPoints/gameSetup.possibleAttackers[i].healthPoints) * 100;
-                         console.log(currentHealth);
+                         currentHero = gameSetup.possibleAttackers[i];
+                         currentHeroHealth = gameSetup.possibleAttackers[i].healthPoints;
+                         currentHeroHealthBar = (gameSetup.possibleAttackers[i].healthPoints/gameSetup.possibleAttackers[i].healthPoints) * 100;
+                         currentHeroAttackPower = gameSetup.possibleAttackers[i].attackPower;
+                         $('#goodGuy').html(`<img class="img-responsive img-rounded center-block" src="${gameSetup.possibleAttackers[i].attackImg}" alt="${gameSetup.possibleAttackers[i].name}">`);
                          heroInfo.html(`
                               <h4>Hero description</h4>
                               <ul class"list-group">
                                    <li class="list-group-item d-flex justify-content-between align-items-center">
                                         Name: ${gameSetup.possibleAttackers[i].name}
                                    </li>
-                                   <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        Health Points: ${gameSetup.possibleAttackers[i].healthPoints}
+                                   <li class="list-group-item d-flex justify-content-between align-items-center" id="heroHealth">
+                                        Health: ${gameSetup.possibleAttackers[i].healthPoints}
                                    </li>
-                                   <li class="list-group-item d-flex justify-content-between align-items-center">
+                                   <li class="list-group-item d-flex justify-content-between align-items-center" id="attackPower">
                                         Attack Power: ${gameSetup.possibleAttackers[i].attackPower}
                                    </li>
-                                   <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        Counter Attack Power: ${gameSetup.possibleAttackers[i].counterAttackPower}
-                                   </li>
                               </ul>
-                              <div class="progress">
-                                   <div class="progress-bar" role="progressbar" style="width: ${currentHealth}%" aria-valuenow="${currentHealth}" aria-valuemin="0" aria-valuemax="100"></div>
+                              <div class="progress" id="heroHealthBar">
+                                   <div class="progress-bar" role="progressbar" style="width: ${currentHeroHealthBar}%" aria-valuenow="${currentHeroHealthBar}" aria-valuemin="0" aria-valuemax="100"></div>
                               </div>
                          `);
                     }    
                }
                $('.availableAttacker').html('Select Villan');
-               $('.availableAttacker').addClass('availableVillan');
-               $('.availableVillan').removeClass('availableAttacker');
-               $('.availableVillan').unbind('availableAttacker');
-               var attacker = $('<div>');
-               attacker.append(hero);
-               $('#goodGuy').html(attacker);
                $('#goodGuy').append(heroInfo);
           },
-          badGuy: function(villan, villanId){
+          badGuy: function(villanId){
                var villanInfo = $('<div>');
-               var opponentImg = $('<div>');
+               // var opponentImg;
                console.log(villanId);
                for(var i=0; i<gameSetup.possibleAttackers.length; i++){
                     if(gameSetup.possibleAttackers[i].id === villanId){
-                         gameSetup.possibleAttackers[i].currentVillan = true;
-                         opponentImg.append(`<img src="${gameSetup.possibleAttackers[i].img}"`);
+                         currentVillan = gameSetup.possibleAttackers[i];
+                         currentVillanHealth = gameSetup.possibleAttackers[i].healthPoints;
+                         currentVillanHealthBar = (gameSetup.possibleAttackers[i].healthPoints/gameSetup.possibleAttackers[i].healthPoints) * 100;
+                         $('#badGuy').html(`<img class="img-responsive img-rounded center-block" src="${gameSetup.possibleAttackers[i].defendImg}" alt="${gameSetup.possibleAttackers[i].name}">`);
                          villanInfo.html(`
-                              <h4>Hero description</h4>
+                              <h4>Villan description</h4>
                               <ul class"list-group">
                                    <li class="list-group-item d-flex justify-content-between align-items-center">
                                         Name: ${gameSetup.possibleAttackers[i].name}
                                    </li>
-                                   <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        Health Points: ${gameSetup.possibleAttackers[i].healthPoints}
-                                   </li>
-                                   <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        Attack Power: ${gameSetup.possibleAttackers[i].attackPower}
+                                   <li class="list-group-item d-flex justify-content-between align-items-center" id="villanHealth">
+                                        Health: ${gameSetup.possibleAttackers[i].healthPoints}
                                    </li>
                                    <li class="list-group-item d-flex justify-content-between align-items-center">
                                         Counter Attack Power: ${gameSetup.possibleAttackers[i].counterAttackPower}
                                    </li>
                               </ul>
-                              <div class="progress">
-                                   <div class="progress-bar" role="progressbar" style="width: ${currentHealth}%" aria-valuenow="${currentHealth}" aria-valuemin="0" aria-valuemax="100"></div>
+                              <div class="progress" id="villanHealthBar">
+                                   <div class="progress-bar" role="progressbar" style="width: ${currentVillanHealthBar}%" aria-valuenow="${currentVillanHealthBar}" aria-valuemin="0" aria-valuemax="100"></div>
                               </div>
                          `);
-
+                         $('#badGuy').append(villanInfo);
                     }
                }
-               $('#badGuy').html(opponentImg);
-               $('#badGuy').html(villanInfo);
+               $('#attack').prop('disabled',false);
+               $('#attack').removeClass('disabled');
+          },
+          lauchAttack: function(){
+               currentVillanHealth -= currentHeroAttackPower;
+               currentHeroHealth -= currentVillan.counterAttackPower;
+               currentVillanHealthBar = (currentVillanHealth/currentVillan.healthPoints)*100;
+               currentHeroHealthBar = (currentHeroHealth/currentHero.healthPoints)*100
+               
+               $('#villanHealthBar').html(`
+                    <div class="progress id="villanHealth">
+                         <div class="progress-bar" role="progressbar" style="width: ${currentVillanHealthBar}%" aria-valuenow="${currentVillanHealthBar}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+               `);
+               $('#heroHealthBar').html(`
+                    <div class="progress" id="heroHealth">
+                         <div class="progress-bar" role="progressbar" style="width: ${currentHeroHealthBar}%" aria-valuenow="${currentHeroHealthBar}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+               `);
+               $('#heroHealth').html(`
+                    Health: ${currentHeroHealth}
+               `);
+               $('#villanHealth').html(`
+                    Health: ${currentVillanHealth}
+               `);
+               currentHeroAttackPower += currentHero.attackPower;
+               $('#attackPower').html(`
+                    Attack Power: ${currentHeroAttackPower}
+               `);
+               if(currentVillanHealth <= 0 && currentHeroHealth <= 0){
+                    $('#attack').prop('disabled',true);
+                    $('#attack').addClass('disabled');
+                    $('#badGuy').html(`
+                         <h3 class="text-center">It's a tie... You have defeated ${currentVillan.name}. Better luck next time!</h3>
+                    `);
+                    $('#goodGuy').html(`
+                         <h3 class="text-center">It's a tie... You have killed by ${currentVillan.name}. Better luck next time!</h3>
+                    `);
+               }
+               else if(currentVillanHealth <= 0){
+                    $('#attack').prop('disabled',true);
+                    $('#attack').addClass('disabled');
+                    $('#badGuy').html(`
+                         <h3 class="text-center">You have defeated ${currentVillan.name}. Take down another bad guy!</h3>
+                    `);
+                    villansKilled++;
+                    $('#villansKilled').html(villansKilled);
+               }
+               else if(currentHeroHealth <= 0){
+                    $('#attack').prop('disabled',true);
+                    $('#attack').addClass('disabled');
+                    $('#goodGuy').html(`
+                         <h3 class="text-center">You have been killed by ${currentVillan.name}. Better luck next time!</h3>
+                    `);
+                    totalDeaths++;
+                    $('#totalDeaths').html(totalDeaths);
+               }
           },
           startGame: function(){
+               availableAttackers = gameSetup.possibleAttackers.length;
                for(var i=0; i<gameSetup.possibleAttackers.length; i++){
                     console.log(gameSetup.possibleAttackers[i]);
                     var possibleAttacker = $('<div>');
-                    possibleAttacker.addClass('col-xs-12 col-sm-3 col-md-3 col-lg-3');
+                    possibleAttacker.addClass('col-xs-12 col-sm-6 col-md-3 col-lg-3');
                     possibleAttacker.append(`
                          <div class="hovereffect" id="${gameSetup.possibleAttackers[i].id}">
                               <img class="img-responsive img-rounded center-block" src="${gameSetup.possibleAttackers[i].img}" alt="${gameSetup.possibleAttackers[i].name}">
@@ -139,41 +191,53 @@ $('document').ready(function(){
                                    <input type="hidden" id="attackerInfo" value="${gameSetup.possibleAttackers[i].id}">
                                    <button class="btn btn-primary availableAttacker">Select Attacker</button>
                               </div>
-                         </div>
-                                   
+                         </div>   
                     `);
-                     $('div#availableAttackers').append(possibleAttacker);
+                    $('div#availableAttackers').append(possibleAttacker);
+                    $(`div#${gameSetup.possibleAttackers[i].id}`).append(`
+                         <ul class"list-group">
+                              <li class="list-group-item d-flex justify-content-between align-items-center">
+                                   Name: ${gameSetup.possibleAttackers[i].name}
+                              </li>
+                              <li class="list-group-item d-flex justify-content-between align-items-center" id="villanHealth">
+                                   Health: ${gameSetup.possibleAttackers[i].healthPoints}
+                              </li>
+                              <li class="list-group-item d-flex justify-content-between align-items-center">
+                                   Attack Power: ${gameSetup.possibleAttackers[i].attackPower}
+                              </li>
+                         </ul>
+                    `);
                }
-               
-          }  
-          // attackVillan: function{
-          //      attackPower += attackPowerInc;
-          //      villanDamage += attackPower;
-          //      healthPoints -= 
-          // }
+               $('.availableAttacker').click(function(){
+                    if(availableAttackers === gameSetup.possibleAttackers.length){
+                         gameSetup.goodGuy($(this).siblings()[2].value);
+                    }
+                    else{
+                         gameSetup.badGuy($(this).siblings()[2].value);
+                    }
+                    $(this).parents('div.hovereffect').empty();
+                    $('#selectionTitle').html('Select Your Bad Guy!');
+                    availableAttackers--;
+               });
+               $('#attack').unbind('click').bind('click', function (e) {
+                    gameSetup.lauchAttack();
+               });
+          } 
      }
      
      gameSetup.startGame();
 
-     $('.availableAttacker').click(function(){
-          gameSetup.goodGuy($(this).parents('div.hovereffect')[0].firstElementChild, $('input#attackerInfo').val(), this);
-
-          $(this).parents('div.hovereffect').empty();
-          $('.selectionTitle').empty();
-          $('#selectionTitle').html('Select Your Bad Guy!');
-     });
-     $('.availableVillan').click(function(){
-          gameSetup.badGuy($(this).parents('div.hovereffect')[0].firstElementChild, $('input#attackerInfo').val());
-          $(this).parents('div.hovereffect').empty();
-     });
-
-     
      $('#restartGame').click(function(){
           $('div#availableAttackers').empty();
           $('div#goodGuy').empty();
-          $('div#badGuys').empty();
+          $('div#badGuy').empty();
+          $('#attack').prop('disabled',true);
+          $('#attack').addClass('disabled');
+          $('#selectionTitle').html('Select Your Good Guy!');
+          currentVillanHealth = 0;
+          currentHeroHealth = 0;
+          currentVillanHealthBar = 0;
+          currentHeroHealthBar = 0;
           gameSetup.startGame()
      });
-
-
 })

@@ -93,3 +93,6 @@ li.list-group-item{
 ul{
      padding-right: 3em;
 }
+button#attack{
+     margin: 0;
+}
