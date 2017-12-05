@@ -120,8 +120,9 @@ $('document').ready(function(){
                }
                $('#attack').prop('disabled',false);
                $('#attack').removeClass('disabled');
+;               console.log(currentVillan);
           },
-          lauchAttack: function(){
+          launchAttack: function(){
                currentVillanHealth -= currentHeroAttackPower;
                currentHeroHealth -= currentVillan.counterAttackPower;
                currentVillanHealthBar = (currentVillanHealth/currentVillan.healthPoints)*100;
@@ -154,7 +155,7 @@ $('document').ready(function(){
                          <h3 class="text-center">It's a tie... You have defeated ${currentVillan.name}. Better luck next time!</h3>
                     `);
                     $('#goodGuy').html(`
-                         <h3 class="text-center">It's a tie... You have been killed by ${currentVillan.name}. Better luck next time!</h3>
+                         <h3 class="text-center">It's a tie... You have been  killed by ${currentVillan.name}. Better luck next time!</h3>
                     `);
                }
                else if(currentVillanHealth <= 0){
@@ -199,7 +200,7 @@ $('document').ready(function(){
                               <li class="list-group-item d-flex justify-content-between align-items-center">
                                    Name: ${gameSetup.possibleAttackers[i].name}
                               </li>
-                              <li class="list-group-item d-flex justify-content-between align-items-center" id="villanHealth">
+                              <li class="list-group-item d-flex justify-content-between align-items-center" id="potentialVillanHealth">
                                    Health: ${gameSetup.possibleAttackers[i].healthPoints}
                               </li>
                               <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -220,7 +221,7 @@ $('document').ready(function(){
                     availableAttackers--;
                });
                $('#attack').unbind('click').bind('click', function (e) {
-                    gameSetup.lauchAttack();
+                    gameSetup.launchAttack();
                });
           } 
      }
