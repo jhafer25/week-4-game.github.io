@@ -239,6 +239,8 @@ $('document').ready(function(){
           currentHeroHealth = 0;
           currentVillanHealthBar = 0;
           currentHeroHealthBar = 0;
+          totalDeaths = 0;
+          villansKilled = 0;
           gameSetup.startGame()
      });
 })
